@@ -28,7 +28,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "PhpHelpers\\": "submodules/php-helpers/"
+            "PhpHelpers\\": "submodules/php-helpers/src/"
         }
     },
     "autoload-dev": {
