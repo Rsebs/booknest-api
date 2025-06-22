@@ -1,0 +1,3 @@
+[submodule "submodules/php-helpers"]
+	path = submodules/php-helpers
+	url = https://github.com/Rsebs/php-helpers.git
