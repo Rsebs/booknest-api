@@ -8,7 +8,7 @@ class Feature extends Model
 {
     protected $fillable = [
         'name',
-        'path_name',
+        'route_name',
         'icon',
         'description',
         'enabled',

@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('features', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('path_name');
-            $table->string('icon');
-            $table->string('description')->nullable();
-            $table->boolean('enabled')->default(true);
+            $table->string('name', 100)->unique();
+            $table->string('route_name', 150)->unique();
+            $table->string('icon', 100);
+            $table->text('description')->nullable();
+            $table->boolean('enabled')->default(true)->index();
 
             $table->timestamps();
         });
