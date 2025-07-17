@@ -6,7 +6,6 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpHelpers\Helpers\ApiResponse;
 
 class UserController extends Controller
 {
@@ -17,9 +16,9 @@ class UserController extends Controller
     {
         try {
             $users = User::all();
-            return ApiResponse::successResponse($users, 'Users fetched successfully');
+            return $this->successResponse($users, 'Users fetched successfully');
         } catch (\Throwable $th) {
-            return ApiResponse::errorResponse('An error occurred while fetching the user data', 500);
+            return $this->errorResponse('An error occurred while fetching the user data', 500);
         }
     }
 
@@ -32,10 +31,10 @@ class UserController extends Controller
             DB::beginTransaction();
             User::create($request->validated());
             DB::commit();
-            return ApiResponse::successResponse([], 'User created successfully', 201);
+            return $this->successResponse([], 'User created successfully', 201);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return ApiResponse::errorResponse($th->getMessage(), 'Something went wrong while creating the user', 500);
+            return $this->errorResponse($th->getMessage(), 'Something went wrong while creating the user', 500);
         }
     }
 

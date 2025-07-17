@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AuthLoginRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use PhpHelpers\Helpers\ApiResponse;
 
 class AuthController extends Controller
 {
@@ -30,9 +29,9 @@ class AuthController extends Controller
                 'avatar' => $user->avatar,
                 'api_token' => $token->plainTextToken,
             ];
-            return ApiResponse::successResponse($loginResponse, 'Login successful!');
+            return $this->successResponse($loginResponse, 'Login successful!');
         } catch (\Throwable $th) {
-            return ApiResponse::errorResponse($th->getMessage(), 'An error occurred', $th->getCode());
+            return $this->errorResponse($th->getMessage(), 'An error occurred', $th->getCode());
         }
     }
 }

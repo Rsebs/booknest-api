@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Feature;
 use Illuminate\Http\Request;
-use PhpHelpers\Helpers\ApiResponse;
 
 class FeatureController extends Controller
 {
@@ -12,9 +11,9 @@ class FeatureController extends Controller
     {
         try {
             $features = Feature::all();
-            return ApiResponse::successResponse($features, 'Users fetched successfully');
+            return $this->successResponse($features, 'Users fetched successfully');
         } catch (\Throwable $th) {
-            return ApiResponse::errorResponse('An error occurred while fetching the user data', 500);
+            return $this->errorResponse('An error occurred while fetching the user data', 500);
         }
     }
 }

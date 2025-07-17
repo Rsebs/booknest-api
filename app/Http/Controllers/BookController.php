@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
-use PhpHelpers\Helpers\ApiResponse;
 
 class BookController extends Controller
 {
@@ -15,9 +14,9 @@ class BookController extends Controller
     {
         try {
             $books = Book::all();
-            return ApiResponse::successResponse($books, 'Books retrieved successfully.');
+            return $this->successResponse($books, 'Books retrieved successfully.');
         } catch (\Exception $e) {
-            return ApiResponse::errorResponse('Failed to retrieve books: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Failed to retrieve books: ' . $e->getMessage(), 500);
         }
     }
 
