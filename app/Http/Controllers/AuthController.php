@@ -3,34 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthLoginRequest;
+use App\Http\Requests\AuthRegisterRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use PhpHelpers\Services\AuthService;
 
 class AuthController extends Controller
 {
+    public function __construct(private AuthService $authService) {}
+
     public function login(AuthLoginRequest $request)
     {
         try {
-            if (!Auth::attempt($request->only('email', 'password')))
-                throw new \Exception('Wrong Credentials', 401);
-
-            $user = Auth::user();
-            if (!($user instanceof User))
-                throw new \Exception('Bad request', 422);
-
-            $user->tokens()->delete();
-
-            $token = $user->createToken('api-token', ['*'], now()->addHours(24));
-
-            $loginResponse = [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'avatar' => $user->avatar,
-                'api_token' => $token->plainTextToken,
-            ];
-            return $this->successResponse($loginResponse, 'Login successful!');
+            $authResponse = $this->authService->attemptLogin($request->email, $request->password);
+            return $this->successResponse($authResponse, 'Login successful!');
         } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 'An error occurred', $th->getCode());
+        }
+    }
+
+    public function register(AuthRegisterRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            User::create($request->validated());
+            $authResponse = $this->authService->attemptLogin($request->email, $request->password);
+            DB::commit();
+            return $this->successResponse($authResponse, 'Register successful!');
+        } catch (\Throwable $th) {
+            DB::rollBack();
             return $this->errorResponse($th->getMessage(), 'An error occurred', $th->getCode());
         }
     }

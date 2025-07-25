@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class AuthLoginRequest extends Request
+class AuthRegisterRequest extends Request
 {
     /**
      * Get the validation rules that apply to the request.
@@ -12,8 +12,9 @@ class AuthLoginRequest extends Request
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email|max:255',
+            'password' => 'required|string|min:8|confirmed',
         ];
     }
 
