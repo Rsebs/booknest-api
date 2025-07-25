@@ -35,4 +35,13 @@ class AuthController extends Controller
             return $this->errorResponse($th->getMessage(), 'An error occurred', $th->getCode());
         }
     }
+
+    public function logout() {
+        try {
+            $this->authService->logoutUser();
+            return $this->successResponse([], 'Logout successful');
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 'An error occurred', $th->getCode());
+        }
+    }
 }
