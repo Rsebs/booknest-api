@@ -21,7 +21,7 @@ class AuthLoginRequest extends Request
     {
         throw new \Illuminate\Validation\ValidationException(
             $validator,
-            $this->errorResponse($validator->errors(), 'validation failed', 422),
+            $this->errorResponse($validator->errors(), __('Validation Error'), 422),
         );
     }
 }
