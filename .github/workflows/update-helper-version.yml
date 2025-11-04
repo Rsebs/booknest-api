@@ -1,0 +1,61 @@
+name: Update helper version in stage
+
+on:
+  repository_dispatch:
+    types: [helper_updated]
+
+jobs:
+  update-branches:
+    runs-on: ubuntu-latest
+    env:
+      REPO_TOKEN: ${{ secrets.REPO_WRITE_TOKEN }}
+    steps:
+      - name: Prepare jq (JSON tool)
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Read TAG from payload
+        id: gettag
+        run: |
+          # The dispatch payload is available at the event JSON path
+          TAG="${{ github.event.client_payload.tag }}"
+          # strip leading 'v' if present
+          TAG_NO_V="${TAG#v}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "tag_no_v=${TAG_NO_V}" >> $GITHUB_OUTPUT
+
+      - name: Update branch matrix
+        uses: actions/github-script@v6
+        with:
+          script: |
+            // create a simple matrix array of branches to update
+            return ['stage']
+          result-encoding: string
+        id: matrix
+
+      - name: Loop update branches
+        run: |
+          TAG="${{ steps.gettag.outputs.tag_no_v }}"
+          echo "Updating branches: ${TAG}"
+          for BR in stage; do
+            echo "Processing branch: $BR"
+
+            # Clone repo, checkout branch
+            git clone https://x-access-token:${REPO_TOKEN}@github.com/${{ github.repository }} repo-${BR}
+            cd repo-${BR}
+            git checkout $BR || (echo "branch $BR not found" && cd .. && continue)
+
+            # Update composer.json require value to exact version (no leading v)
+            # This sets the version string to the tag (e.g., "1.1.0"). Adjust if you want caret.
+            jq --arg v "$TAG" '.require["rsebs/php-helpers"] = ($v | ltrimstr("v"))' composer.json > composer.tmp && mv composer.tmp composer.json
+
+            # Show diff
+            git add composer.json
+            if git diff --cached --quiet; then
+              echo "No changes for $BR"
+            else
+              git commit -m "chore: bump rsebs/php-helpers to ${TAG}"
+              git push origin $BR
+            fi
+
+            cd ..
+          done
