@@ -8,6 +8,6 @@ class LookupController extends Controller
 {
     public function index(string $resource, LookupService $service)
     {
-        return $this->successResponse($service->handle($resource, request()->all()));
+        return $service->handle($resource, request()->all());
     }
 }

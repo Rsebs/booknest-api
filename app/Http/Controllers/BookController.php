@@ -12,12 +12,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        try {
-            $books = Book::all();
-            return $this->successResponse($books, 'Books retrieved successfully.');
-        } catch (\Exception $e) {
-            return $this->errorResponse('Failed to retrieve books: ' . $e->getMessage(), 500);
-        }
+        return Book::all();
     }
 
     /**
