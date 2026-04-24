@@ -3,7 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\UtilsController;
+use App\Http\Controllers\LookupController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -15,5 +15,4 @@ Route::post('register', [AuthController::class, 'register'])->name('auth.registe
 
 Route::apiResource('books', BookController::class)->only(['index', 'show']);
 
-Route::get('select/{nameModel}', [UtilsController::class, 'selectOptions'])->name('utils.select');
-Route::apiResource('categories', CategoryController::class);
+Route::get('lookups/{resource}', [LookupController::class, 'index'])->name('lookups.index');
